@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ETradingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Admin">
+    <Key>
+      <PropertyRef Name="AdminId" />
+    </Key>
+    <Property Name="AdminId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="20" />
+    <Property Name="password" Type="varchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="BusinessOwners">
+    <Key>
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="CompanyId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CompanyName" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="OwnerName" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="OwnerEmail" Type="varchar" MaxLength="60" Nullable="false" />
+    <Property Name="CompanyPasscode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="DateOfIncorporation" Type="date" Nullable="false" />
+    <Property Name="PhoneNumber" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="CategoryId" Type="smallint" />
+    <Property Name="CompanyAddress" Type="varchar" MaxLength="60" Nullable="false" />
+    <Property Name="SharePrice" Type="int" Nullable="false" />
+    <Property Name="NoOfShares" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CategoryDetails">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="CategoryId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CategoryName" Type="varchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="CustomerDetails">
+    <Key>
+      <PropertyRef Name="CustomerId" />
+    </Key>
+    <Property Name="CustomerId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerName" Type="varchar" MaxLength="50" />
+    <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="CustomerEmail" Type="varchar" MaxLength="20" />
+    <Property Name="DOB" Type="date" />
+    <Property Name="PhoneNumber" Type="varchar" MaxLength="15" />
+    <Property Name="AccountBalance" Type="money" />
+    <Property Name="Address" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Transactions">
+    <Key>
+      <PropertyRef Name="TransactionId" />
+    </Key>
+    <Property Name="TransactionId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NoOfShares" Type="smallint" />
+    <Property Name="TransactionType" Type="varchar" MaxLength="30" />
+    <Property Name="SharePrice" Type="money" />
+    <Property Name="TransactionDate" Type="date" />
+    <Property Name="CustomerId" Type="smallint" />
+    <Property Name="CompanyId" Type="smallint" />
+  </EntityType>
+  <Association Name="fk_businessowners_categoryid">
+    <End Role="CategoryDetails" Type="Self.CategoryDetails" Multiplicity="0..1" />
+    <End Role="BusinessOwners" Type="Self.BusinessOwners" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CategoryDetails">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="BusinessOwners">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BusinessOwners_CompanyId">
+    <End Role="BusinessOwners" Type="Self.BusinessOwners" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BusinessOwners">
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CustomerDetails_CustomerId">
+    <End Role="CustomerDetails" Type="Self.CustomerDetails" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerDetails">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="GetCustomersAccordingToCompany" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CompanyId" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_AdminLogin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="email" Type="varchar" Mode="In" />
+    <Parameter Name="password" Type="varchar" Mode="In" />
+    <Parameter Name="val" Type="smallint" Mode="InOut" />
+  </Function>
+  <Function Name="proc_BusinessOwnerLogin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="OwnerEmail" Type="varchar" Mode="In" />
+    <Parameter Name="CompanyPassCode" Type="varchar" Mode="In" />
+    <Parameter Name="val" Type="smallint" Mode="InOut" />
+  </Function>
+  <Function Name="proc_buyShares" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="companyId" Type="smallint" Mode="In" />
+    <Parameter Name="shareQuantity" Type="int" Mode="In" />
+    <Parameter Name="email" Type="varchar" Mode="In" />
+    <Parameter Name="status" Type="smallint" Mode="InOut" />
+  </Function>
+  <Function Name="proc_Checkbalance_Customer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="email" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_CheckSharePrice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="proc_Customer_Login" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="email" Type="varchar" Mode="In" />
+    <Parameter Name="password" Type="varchar" Mode="In" />
+    <Parameter Name="loginStatus" Type="smallint" Mode="InOut" />
+  </Function>
+  <Function Name="proc_customerInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="custId" Type="smallint" Mode="InOut" />
+    <Parameter Name="CustName" Type="varchar" Mode="In" />
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+    <Parameter Name="Password" Type="varchar" Mode="In" />
+    <Parameter Name="DOB" Type="date" Mode="In" />
+    <Parameter Name="phoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="AccountBalance" Type="money" Mode="In" />
+    <Parameter Name="Address" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_Delete_CategoryDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CategoryId" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_Delete_Customer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CustomerId" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_Delete_Owner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CompanyId" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_displayTransactionDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="email" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_GetAllCategoryDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="proc_GetOwnerDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="proc_Insert_Category" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CategoryId" Type="smallint" Mode="InOut" />
+    <Parameter Name="CategoryName" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_Insert_Owner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CompanyId" Type="smallint" Mode="InOut" />
+    <Parameter Name="OwnerEmail" Type="varchar" Mode="In" />
+    <Parameter Name="CompanyPasscode" Type="varchar" Mode="In" />
+    <Parameter Name="CompanyName" Type="varchar" Mode="In" />
+    <Parameter Name="OwnerName" Type="varchar" Mode="In" />
+    <Parameter Name="DateOfIncorporation" Type="date" Mode="In" />
+    <Parameter Name="PhoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="CategoryId" Type="smallint" Mode="In" />
+    <Parameter Name="CompanyAddress" Type="varchar" Mode="In" />
+    <Parameter Name="SharePrice" Type="int" Mode="In" />
+    <Parameter Name="NoOfShares" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_Search_CategoryDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CategoryId" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_Search_Owner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CompanyId" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_sellShares" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="numberofshares" Type="smallint" Mode="In" />
+    <Parameter Name="companyId" Type="smallint" Mode="In" />
+    <Parameter Name="CustomerEmail" Type="varchar" Mode="In" />
+    <Parameter Name="val" Type="smallint" Mode="InOut" />
+  </Function>
+  <Function Name="proc_Update_CategoryDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CategoryName" Type="varchar" Mode="In" />
+    <Parameter Name="NewCategoryName" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_Update_Owner" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CompanyId" Type="smallint" Mode="In" />
+    <Parameter Name="CompanyPassCode" Type="varchar" Mode="In" />
+    <Parameter Name="OwnerName" Type="varchar" Mode="In" />
+    <Parameter Name="OwnerEmail" Type="varchar" Mode="In" />
+    <Parameter Name="DateOfIncorporation" Type="date" Mode="In" />
+    <Parameter Name="PhoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="CompanyAddress" Type="varchar" Mode="In" />
+    <Parameter Name="SharePrice" Type="int" Mode="In" />
+    <Parameter Name="NoOfShares" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_UpdateCustomerDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="oldEmail" Type="varchar" Mode="In" />
+    <Parameter Name="CustName" Type="varchar" Mode="In" />
+    <Parameter Name="Password" Type="varchar" Mode="In" />
+    <Parameter Name="newEmail" Type="varchar" Mode="In" />
+    <Parameter Name="DOB" Type="date" Mode="In" />
+    <Parameter Name="phoneNumber" Type="varchar" Mode="In" />
+    <Parameter Name="AccountBalance" Type="money" Mode="In" />
+    <Parameter Name="Address" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="proc_ViewAllCustomers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="proc_ViewCompanyDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="CompanyId" Type="smallint" Mode="In" />
+  </Function>
+  <Function Name="proc_ViewDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Email" Type="varchar" Mode="In" />
+  </Function>
+  <EntityContainer Name="ETradingModelStoreContainer">
+    <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BusinessOwners" EntityType="Self.BusinessOwners" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CategoryDetails" EntityType="Self.CategoryDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_businessowners_categoryid" Association="Self.fk_businessowners_categoryid">
+      <End Role="CategoryDetails" EntitySet="CategoryDetails" />
+      <End Role="BusinessOwners" EntitySet="BusinessOwners" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BusinessOwners_CompanyId" Association="Self.fk_BusinessOwners_CompanyId">
+      <End Role="BusinessOwners" EntitySet="BusinessOwners" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CustomerDetails_CustomerId" Association="Self.fk_CustomerDetails_CustomerId">
+      <End Role="CustomerDetails" EntitySet="CustomerDetails" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

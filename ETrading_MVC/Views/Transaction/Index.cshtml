@@ -1,0 +1,34 @@
+﻿@model IEnumerable<ETrading_MVC.Models.SharePriceVM>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Customer/_CustomerLayout.cshtml";
+}
+
+<h2>Share Price Details</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SharePrice)
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SharePrice)
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<ETrading_MVC.Models.BusinessOwnerVM>
+
+@{
+    ViewBag.Title = "GetCompanyList";
+    Layout = "~/Views/Customer/_CustomerLayout.cshtml";
+}
+
+<h2>Company List</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "DisplayCompanyDetails", new { id = item.CompanyId })
+            </td>
+        </tr>
+    }
+
+</table>

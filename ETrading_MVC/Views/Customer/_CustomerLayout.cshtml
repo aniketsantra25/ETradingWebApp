@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("View Profile", "Details", "Customer", new { email = Session["UserEmail"] }, null)</li>
+                    <li>@Html.ActionLink("Edit Profile", "Edit", "Customer", new { email = Session["UserEmail"] }, null)</li>
+                    <li>@Html.ActionLink("Account Balance", "GetBalance", "Customer", new { mail = Session["UserEmail"] }, null)</li>
+                    <li>@Html.ActionLink("Display Transactions", "detailtransaction", "Transaction", new { email = Session["UserEmail"] }, null)</li>
+                    @*<li>@Html.ActionLink("View All", "Index", "Customer")</li>*@
+                    <li>@Html.ActionLink("Display Company List", "GetCompanyList", "Transaction")</li>
+                    <li>@Html.ActionLink("Display SharePrice", "Index", "Transaction")</li>
+                    <li>@Html.ActionLink("Buy Shares", "BuyShares", "Transaction", new { email = Session["UserEmail"] }, null)</li>
+                    <li>@Html.ActionLink("Sell Shares", "SellShares", "Transaction", new { email = Session["UserEmail"] }, null)</li>
+
+                    @if (Session["UserEmail"] != null)
+                    {
+                        <li><a href="#">Hi @Session["UserEmail"]</a></li>
+                        <li>@Html.ActionLink("LogOut", "Logout", "Customer")</li>
+                    }
+                </ul>
+
+                @*@Html.Partial("_LoginPartial")*@
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - E-Trading Application</p>
+        </footer>
+    </div>
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

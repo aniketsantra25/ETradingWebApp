@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ETradingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Admin">
+    <Key>
+      <PropertyRef Name="AdminId" />
+    </Key>
+    <Property Name="AdminId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Email" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="BusinessOwner">
+    <Key>
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="CompanyId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CompanyName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="OwnerName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="OwnerEmail" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CompanyPasscode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DateOfIncorporation" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CategoryId" Type="Int16" />
+    <Property Name="CompanyAddress" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="SharePrice" Type="Int32" Nullable="false" />
+    <Property Name="NoOfShares" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="CategoryDetail" Relationship="Self.fk_businessowners_categoryid" FromRole="BusinessOwners" ToRole="CategoryDetails" />
+    <NavigationProperty Name="Transactions" Relationship="Self.fk_BusinessOwners_CompanyId" FromRole="BusinessOwners" ToRole="Transactions" />
+  </EntityType>
+  <EntityType Name="CategoryDetail">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="CategoryId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CategoryName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BusinessOwners" Relationship="Self.fk_businessowners_categoryid" FromRole="CategoryDetails" ToRole="BusinessOwners" />
+  </EntityType>
+  <EntityType Name="CustomerDetail">
+    <Key>
+      <PropertyRef Name="CustomerId" />
+    </Key>
+    <Property Name="CustomerId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CustomerEmail" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DOB" Type="DateTime" Precision="0" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="AccountBalance" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Transactions" Relationship="Self.fk_CustomerDetails_CustomerId" FromRole="CustomerDetails" ToRole="Transactions" />
+  </EntityType>
+  <EntityType Name="Transaction">
+    <Key>
+      <PropertyRef Name="TransactionId" />
+    </Key>
+    <Property Name="TransactionId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NoOfShares" Type="Int16" />
+    <Property Name="TransactionType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="SharePrice" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="TransactionDate" Type="DateTime" Precision="0" />
+    <Property Name="CustomerId" Type="Int16" />
+    <Property Name="CompanyId" Type="Int16" />
+    <NavigationProperty Name="BusinessOwner" Relationship="Self.fk_BusinessOwners_CompanyId" FromRole="Transactions" ToRole="BusinessOwners" />
+    <NavigationProperty Name="CustomerDetail" Relationship="Self.fk_CustomerDetails_CustomerId" FromRole="Transactions" ToRole="CustomerDetails" />
+  </EntityType>
+  <Association Name="fk_businessowners_categoryid">
+    <End Role="CategoryDetails" Type="Self.CategoryDetail" Multiplicity="0..1" />
+    <End Role="BusinessOwners" Type="Self.BusinessOwner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CategoryDetails">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="BusinessOwners">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BusinessOwners_CompanyId">
+    <End Role="BusinessOwners" Type="Self.BusinessOwner" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BusinessOwners">
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CustomerDetails_CustomerId">
+    <End Role="CustomerDetails" Type="Self.CustomerDetail" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerDetails">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ETradingEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Admins" EntityType="Self.Admin" />
+    <EntitySet Name="BusinessOwners" EntityType="Self.BusinessOwner" />
+    <EntitySet Name="CategoryDetails" EntityType="Self.CategoryDetail" />
+    <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetail" />
+    <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+    <AssociationSet Name="fk_businessowners_categoryid" Association="Self.fk_businessowners_categoryid">
+      <End Role="CategoryDetails" EntitySet="CategoryDetails" />
+      <End Role="BusinessOwners" EntitySet="BusinessOwners" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BusinessOwners_CompanyId" Association="Self.fk_BusinessOwners_CompanyId">
+      <End Role="BusinessOwners" EntitySet="BusinessOwners" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CustomerDetails_CustomerId" Association="Self.fk_CustomerDetails_CustomerId">
+      <End Role="CustomerDetails" EntitySet="CustomerDetails" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+    <FunctionImport Name="GetCustomersAccordingToCompany" EntitySet="CustomerDetails" ReturnType="Collection(ETradingModel.CustomerDetail)">
+      <Parameter Name="CompanyId" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_AdminLogin" ReturnType="Collection(ETradingModel.proc_AdminLogin_Result)">
+      <Parameter Name="email" Mode="In" Type="String" />
+      <Parameter Name="password" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_BusinessOwnerLogin" ReturnType="Collection(ETradingModel.proc_BusinessOwnerLogin_Result)">
+      <Parameter Name="OwnerEmail" Mode="In" Type="String" />
+      <Parameter Name="CompanyPassCode" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_buyShares">
+      <Parameter Name="companyId" Mode="In" Type="Int16" />
+      <Parameter Name="shareQuantity" Mode="In" Type="Int32" />
+      <Parameter Name="email" Mode="In" Type="String" />
+      <Parameter Name="status" Mode="InOut" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Checkbalance_Customer" ReturnType="Collection(Decimal)">
+      <Parameter Name="email" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_CheckSharePrice" ReturnType="Collection(ETradingModel.proc_CheckSharePrice_Result)" />
+    <FunctionImport Name="proc_Customer_Login">
+      <Parameter Name="email" Mode="In" Type="String" />
+      <Parameter Name="password" Mode="In" Type="String" />
+      <Parameter Name="loginStatus" Mode="InOut" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_customerInsert">
+      <Parameter Name="custId" Mode="InOut" Type="Int16" />
+      <Parameter Name="CustName" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="DOB" Mode="In" Type="DateTime" />
+      <Parameter Name="phoneNumber" Mode="In" Type="String" />
+      <Parameter Name="AccountBalance" Mode="In" Type="Decimal" />
+      <Parameter Name="Address" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Delete_CategoryDetails">
+      <Parameter Name="CategoryId" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Delete_Customer">
+      <Parameter Name="CustomerEmail" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Delete_Owner">
+      <Parameter Name="CompanyId" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_displayTransactionDetails" EntitySet="Transactions" ReturnType="Collection(ETradingModel.Transaction)">
+      <Parameter Name="email" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_GetAllCategoryDetails" EntitySet="CategoryDetails" ReturnType="Collection(ETradingModel.CategoryDetail)" />
+    <FunctionImport Name="proc_GetOwnerDetails" EntitySet="BusinessOwners" ReturnType="Collection(ETradingModel.BusinessOwner)" />
+    <FunctionImport Name="proc_Insert_Category">
+      <Parameter Name="CategoryId" Mode="InOut" Type="Int16" />
+      <Parameter Name="CategoryName" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Insert_Owner">
+      <Parameter Name="CompanyId" Mode="InOut" Type="Int16" />
+      <Parameter Name="OwnerEmail" Mode="In" Type="String" />
+      <Parameter Name="CompanyPasscode" Mode="In" Type="String" />
+      <Parameter Name="CompanyName" Mode="In" Type="String" />
+      <Parameter Name="OwnerName" Mode="In" Type="String" />
+      <Parameter Name="DateOfIncorporation" Mode="In" Type="DateTime" />
+      <Parameter Name="PhoneNumber" Mode="In" Type="String" />
+      <Parameter Name="CategoryId" Mode="In" Type="Int16" />
+      <Parameter Name="CompanyAddress" Mode="In" Type="String" />
+      <Parameter Name="SharePrice" Mode="In" Type="Int32" />
+      <Parameter Name="NoOfShares" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Search_CategoryDetails" EntitySet="CategoryDetails" ReturnType="Collection(ETradingModel.CategoryDetail)">
+      <Parameter Name="CategoryId" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Search_Owner" EntitySet="BusinessOwners" ReturnType="Collection(ETradingModel.BusinessOwner)">
+      <Parameter Name="CompanyId" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_sellShares">
+      <Parameter Name="numberofshares" Mode="In" Type="Int16" />
+      <Parameter Name="companyId" Mode="In" Type="Int16" />
+      <Parameter Name="CustomerEmail" Mode="In" Type="String" />
+      <Parameter Name="val" Mode="InOut" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Update_CategoryDetails">
+      <Parameter Name="CategoryName" Mode="In" Type="String" />
+      <Parameter Name="NewCategoryName" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_Update_Owner">
+      <Parameter Name="CompanyId" Mode="In" Type="Int16" />
+      <Parameter Name="CompanyPassCode" Mode="In" Type="String" />
+      <Parameter Name="OwnerName" Mode="In" Type="String" />
+      <Parameter Name="OwnerEmail" Mode="In" Type="String" />
+      <Parameter Name="DateOfIncorporation" Mode="In" Type="DateTime" />
+      <Parameter Name="PhoneNumber" Mode="In" Type="String" />
+      <Parameter Name="CompanyAddress" Mode="In" Type="String" />
+      <Parameter Name="SharePrice" Mode="In" Type="Int32" />
+      <Parameter Name="NoOfShares" Mode="In" Type="Int16" />
+    </FunctionImport>
+    <FunctionImport Name="proc_UpdateCustomerDetails">
+      <Parameter Name="oldEmail" Mode="In" Type="String" />
+      <Parameter Name="CustName" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="newEmail" Mode="In" Type="String" />
+      <Parameter Name="DOB" Mode="In" Type="DateTime" />
+      <Parameter Name="phoneNumber" Mode="In" Type="String" />
+      <Parameter Name="AccountBalance" Mode="In" Type="Decimal" />
+      <Parameter Name="Address" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_ViewAllCustomers" EntitySet="BusinessOwners" ReturnType="Collection(ETradingModel.BusinessOwner)" />
+    <FunctionImport Name="proc_ViewCompanyDetails" EntitySet="BusinessOwners" ReturnType="Collection(ETradingModel.BusinessOwner)">
+      <Parameter Name="CompanyId" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="proc_ViewDetails" EntitySet="CustomerDetails" ReturnType="Collection(ETradingModel.CustomerDetail)">
+      <Parameter Name="Email" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="GetCustomersAccordingToCompany_Result">
+    <Property Type="Int16" Name="CustomerId" Nullable="false" />
+    <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Password" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="CustomerEmail" Nullable="true" MaxLength="20" />
+    <Property Type="DateTime" Name="DOB" Nullable="true" />
+    <Property Type="String" Name="PhoneNumber" Nullable="true" MaxLength="15" />
+    <Property Type="Decimal" Name="AccountBalance" Nullable="true" Precision="19" />
+    <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="proc_AdminLogin_Result">
+    <Property Type="Int16" Name="AdminId" Nullable="false" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="password" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="proc_BusinessOwnerLogin_Result">
+    <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerEmail" Nullable="false" MaxLength="60" />
+    <Property Type="DateTime" Name="DateOfIncorporation" Nullable="false" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="15" />
+    <Property Type="Int16" Name="CategoryId" Nullable="true" />
+    <Property Type="String" Name="CompanyAddress" Nullable="false" MaxLength="60" />
+    <Property Type="Int32" Name="SharePrice" Nullable="false" />
+    <Property Type="Int16" Name="NoOfShares" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="proc_CheckSharePrice_Result">
+    <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="30" />
+    <Property Type="Int32" Name="SharePrice" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="proc_displayTransactionDetails_Result">
+    <Property Type="Int16" Name="TransactionId" Nullable="false" />
+    <Property Type="Int16" Name="NoOfShares" Nullable="true" />
+    <Property Type="String" Name="TransactionType" Nullable="true" MaxLength="30" />
+    <Property Type="Decimal" Name="SharePrice" Nullable="true" Precision="19" />
+    <Property Type="DateTime" Name="TransactionDate" Nullable="true" />
+    <Property Type="Int16" Name="CustomerId" Nullable="true" />
+    <Property Type="Int16" Name="CompanyId" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="proc_GetAllCategoryDetails_Result">
+    <Property Type="Int16" Name="CategoryId" Nullable="false" />
+    <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="proc_GetOwnerDetails_Result">
+    <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerEmail" Nullable="false" MaxLength="60" />
+    <Property Type="DateTime" Name="DateOfIncorporation" Nullable="false" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="15" />
+    <Property Type="Int16" Name="CategoryId" Nullable="true" />
+    <Property Type="String" Name="CompanyAddress" Nullable="false" MaxLength="60" />
+    <Property Type="Int32" Name="SharePrice" Nullable="false" />
+    <Property Type="Int16" Name="NoOfShares" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="proc_Search_CategoryDetails_Result">
+    <Property Type="Int16" Name="CategoryId" Nullable="false" />
+    <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="proc_Search_Owner_Result">
+    <Property Type="Int16" Name="CompanyId" Nullable="false" />
+    <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerEmail" Nullable="false" MaxLength="60" />
+    <Property Type="String" Name="CompanyPasscode" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="DateOfIncorporation" Nullable="false" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="15" />
+    <Property Type="Int16" Name="CategoryId" Nullable="true" />
+    <Property Type="String" Name="CompanyAddress" Nullable="false" MaxLength="60" />
+    <Property Type="Int32" Name="SharePrice" Nullable="false" />
+    <Property Type="Int16" Name="NoOfShares" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="proc_ViewAllCustomers_Result">
+    <Property Type="Int16" Name="CustomerId" Nullable="false" />
+    <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Password" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="CustomerEmail" Nullable="true" MaxLength="20" />
+    <Property Type="DateTime" Name="DOB" Nullable="true" />
+    <Property Type="String" Name="PhoneNumber" Nullable="true" MaxLength="15" />
+    <Property Type="Decimal" Name="AccountBalance" Nullable="true" Precision="19" />
+    <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="proc_ViewCompanyDetails_Result">
+    <Property Type="Int16" Name="CompanyId" Nullable="false" />
+    <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerName" Nullable="false" MaxLength="30" />
+    <Property Type="String" Name="OwnerEmail" Nullable="false" MaxLength="60" />
+    <Property Type="String" Name="CompanyPasscode" Nullable="false" MaxLength="20" />
+    <Property Type="DateTime" Name="DateOfIncorporation" Nullable="false" />
+    <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="15" />
+    <Property Type="Int16" Name="CategoryId" Nullable="true" />
+    <Property Type="String" Name="CompanyAddress" Nullable="false" MaxLength="60" />
+    <Property Type="Int32" Name="SharePrice" Nullable="false" />
+    <Property Type="Int16" Name="NoOfShares" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="proc_ViewDetails_Result">
+    <Property Type="Int16" Name="CustomerId" Nullable="false" />
+    <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Password" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="CustomerEmail" Nullable="true" MaxLength="20" />
+    <Property Type="DateTime" Name="DOB" Nullable="true" />
+    <Property Type="String" Name="PhoneNumber" Nullable="true" MaxLength="15" />
+    <Property Type="Decimal" Name="AccountBalance" Nullable="true" Precision="19" />
+    <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+  </ComplexType>
+</Schema>

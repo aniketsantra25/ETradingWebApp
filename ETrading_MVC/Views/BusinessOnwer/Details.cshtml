@@ -1,0 +1,101 @@
+﻿@model ETrading_MVC.Models.BusinessOwnerVM
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/BusinessOnwer/_BusinessOwnerLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BusinessOwnerVM</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CompanyId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerEmail)
+        </dd>
+
+       
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfIncorporation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfIncorporation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CategoryId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CategoryId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CompanyAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SharePrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SharePrice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NoOfShares)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NoOfShares)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.CompanyId}) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
